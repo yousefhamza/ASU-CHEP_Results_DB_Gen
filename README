@@ -1,0 +1,64 @@
+Just Import the DB and have fun with it :)
+
+
+PS' I'm looking for a backend developer to use the database and help me build a website that provides
+valuable information to the students about their grades and what it really means and their position
+between their colleagues.
+If you are interested contact me ASAP on: jo.adam.93@gmail.com
+
+
+How it's done:
+-----------------------------------------------------
+
+It's done in 2 steps:
+1_ get all the html files for students result 'Results HTML.py'
+2_ parse those HTML file to generate the DB 'Gen DB.py'
+
+
+About the database:
+------------------------------------------------------
+
+[The Database can be found at the Database directory]
+
+It consists of 3 tables (Students, Courses, Courses_info)
+
+-Students table (student_id [varchar], student_name [varchar], student_grade[float])
+
+-Courses table (course_id[int], student_id[varchar])
+
+    *multiple entries for the same course_id and for the same student_id
+
+-Courses_info table (course_id, course_name, course_average[float], course_max[float], course_min[float])
+
+
+
+The code isn't that fancy, and you can use the Database directly to your benefit.
+Just be nice and let us know about it.
+
+[Works For Fall 2014 semester]
+I expect this to work for each and every semester, but some parameters will be updated,
+I will update the code each semester, If I didn't you are welcome to edit it and make a pull request.
+
+
+
+About ASU CHEP ID:
+-------------------------------------------------------
+
+It consists of 3 parts, for example for my ID '11p6001':
+    [11]  [p6]  [001]
+
+11: is the class number for all students who applied in the same year as me
+    it increments every year, the first year being [04] and the last one as of spring 2015 '14'
+
+ p6: this is for the department, the departments are from [p1] > [p8] '8 departments'
+
+ 001: just a sequentially generated number: for my class and department we are 23 students it's
+      001 > 023
+
+
+
+ Credits:
+ ----------------------------------------------------
+
+ Thanks to Amr el monier for his valuable information about how ASU CHEP ID works and without
+ him this couldn't have happened.
