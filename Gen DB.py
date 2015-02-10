@@ -8,6 +8,15 @@ db = MySQLdb.connect("localhost", "root", "", "Fall_2014_Grades")
 
 cursor = db.cursor()
 
+special_credit_hours = {}
+
+special_cr_file = open('Special_credit_hour_courses.csv', 'r')
+
+for line in special_cr_file.readlines():
+    data = line.strip('\n').strip('\r').split(',')[-2:]
+    special_credit_hours[data[0].strip(' ')] = float(data[1])
+
+
 #Grades and it's 4.0 scale
 grades  = {
     "A+": 4.0,
@@ -71,21 +80,27 @@ for i in range(10, 15):
                     cols = row.findChildren('td')
                     if len(cols)< 2:
                         continue
-                    number_of_courses += 1
 
                     course_name = str(cols[0].text)
+                    if(special_credit_hours.has_key(course_name)):
+                        number_of_courses += (1*special_credit_hours[course_name])
+                    else:
+                        number_of_courses += 3
 
                     #Check if course already added to dictionary or not
                     if(not courses.has_key(course_name)):
-                        courses[course_name] = [0, 1, 0.0, 4.0, ID]
+                        courses[course_name] = [0, 1, 0.0, 4.0, ID, 1]
                         ID += 1
                     else:
                         courses[course_name][1] = courses[course_name][1] + 1
+                        courses[course_name][5] += 1
 
                     student_grade_for_course = grades[cols[1].text]
 
-
-                    total_grades += student_grade_for_course
+                    if (special_credit_hours.has_key(course_name)):
+                        total_grades += student_grade_for_course*special_credit_hours[course_name]
+                    else:
+                        total_grades += student_grade_for_course * 3.0
 
                     course_average = courses[course_name][0]
                     course_counter = courses[course_name][1]
@@ -122,9 +137,10 @@ for i in range(10, 15):
 
 
 for course_name in courses.keys():
-    sql = "INSERT INTO Courses_info(course_id, course_name, course_average, course_max, course_min)" \
-          "VALUES({0}, \"{1}\", {2}, {3}, {4});".format(courses[course_name][4], course_name, courses[course_name][0],
-                                                     courses[course_name][2], courses[course_name][3])
+    sql = "INSERT INTO Courses_info(course_id, course_name, course_average, course_max, course_min, number_of_students)" \
+          "VALUES({0}, \"{1}\", {2}, {3}, {4}, {5});".format(courses[course_name][4], course_name, courses[course_name][0],
+                                                     courses[course_name][2], courses[course_name][3],
+                                                     courses[course_name][5])
     try:
         cursor.execute(sql)
         db.commit()
@@ -132,4 +148,3 @@ for course_name in courses.keys():
         db.rollback()
 
 db.close()
-print 'all done! :\')'
