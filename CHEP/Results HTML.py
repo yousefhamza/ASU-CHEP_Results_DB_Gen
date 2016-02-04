@@ -12,11 +12,13 @@ def create_file(directory, file_name, content):
     html_file.close()
 
 data = {
-        "__VIEWSTATE": "7NMw+ShG5zHDO8udtGkRKDwTGPBfLT7aX6Rc7NWyaeoR4syArDXi/ihLm525lLlHftU5lIo1Iy8r9MruLmzZPGvow4GZLxbDJuWr6x+HRIGQd6GAN1sOqjp6mhRG5ge7Dajh7L4pbhmft1PnNEqUETP1vryAeN9T0bGqZSQKbCurAC5uSq40JKax0el6GINaLlc1RzkxPDhQ7LLDlbwBEg8yur/3uI3nI36sBV2QDnhVgueMA97LQYwns3UxZ9ZoHB2EJyDj5vB9rJaqKOsrrIzy8415HsHVOVBgPhbBxz5szLbit5Qg8nqjVtkmsbNOc5dU3KpOS02Aha0IBLS3AfieLQXx3223f+qvmSm1HyxnDBL3sbj7BGnlCpuxAocRAr9y1oT6hyG2tsn/u9lhi6alBmQz9bxhNSOFzxypxoYFNazebJYGvTETQ3u70m61YI/nAav4tb18aggwUvEMVtx16EZaNTnHDl1gF/eZYoiXuYOaDghw077/p4Kg0bzDiQSwln3MsShxefqoTNfkZkhQHZ1zjk1c9MMlz5lM8l/8sv85JN/heZFp15qvdtIr5LF7pnZ+XE09JkbuNuNOdhQ6Ke8BowcTLuJ8ft6DhOrc19sJNpY4yP4jEkGzjc+mZXv1EIKkUH8hV3lTDLaEpiWOcRQl5S7Mzni/n5VsNBrmn7HQGCskdchlvwvzNd6er5b/YBxXtqtZMAYrKhKneKB+/jUjDauuyVcJJ8JyAgQeXq8KGZ6Xen4bciHMv3Dc4ERVUbdC8t9rK2ay76+2qmTwEOEIIWzq4nqlsWQ5vx1w5njhgDYn2q/4RHE+4ADoJk0VH+PiKM6kP43PTqiOo+5GVGPU3Q7ZTUEP+gIbpJojud+QeCY+3BYs52neoPWE1nJMBFfsnx4SG0hCkvHy0icZUZg/JFGxHl1I6xFqnPd133yLR6uoI4PIiVueBTFLgdzZ4HvMeV5cjc780IOtup58DSrxOdY44dEw8PcdVvgQpoX4/w2B2iS8vzMjXMMEq/v74bD+ooHnD0Vjl+7ciSXZ2BdiosHHtVtvLuGNGzE=",
-        "__EVENTVALIDATION": "P69aUk7XIM6Zu5fUB6uuPtb9D4w5gwiPu/vY8uaxDu/pR56hy1ptEkFxmU8DV9eWi1AnosOA/QOJALoJ+yXhabeLRwMo5Us+J19TaoDImoTx7PBEqceGjDP+IVsXa6oY"
+        "__VIEWSTATE": "/wEPDwUKMTE0MTgyMzA2MWRkTVT3/xXUSp16CSrB5hOgkWjC9UJYWp7C1QQJ18NLmAs=",
+        "__EVENTVALIDATION": "/wEdAANPEvVgwxyl6IGKZicy6Ys5WdyjOOJja56tPh/KF/Iuy3b4zQ92ZI3W7mIN024CSE6ols1gh2Vbk4YBgq13T/zImD4GXfubMCmCpW1ift7jBg==",
+        "__VIEWSTATEGENERATOR": "158BA121",
+        "btnDisplayResults": "Show Results"
     }
 
-input_filed_name = "ctl00$main$TextBox1"
+input_filed_name = "txtID"
 
 file_departments_data = open('department_data', 'w+')
 
@@ -48,8 +50,9 @@ for i in range(10, 15):
                 student_ID = department_ID + str(k)
 
             data[input_filed_name] = student_ID
+            print data
 
-            response = requests.post("http://chep.eng.asu.edu.eg/result/", data = data)
+            response = requests.post("http://engasu.net/chepfall/Results.aspx", data = data)
 
             parsed_html = BeautifulSoup(response.text)
             tables = parsed_html.findChildren('table')
