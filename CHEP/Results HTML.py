@@ -50,7 +50,6 @@ for i in range(10, 15):
                 student_ID = department_ID + str(k)
 
             data[input_filed_name] = student_ID
-            print data
 
             response = requests.post("http://engasu.net/chepfall/Results.aspx", data = data)
 
