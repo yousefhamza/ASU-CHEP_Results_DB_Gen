@@ -4,9 +4,10 @@ import os
 import MySQLdb
 from BeautifulSoup import BeautifulSoup
 
+
 try:
-    db = MySQLdb.connect("localhost", "root", "123", "Fall_2014_Grades")
-except:
+    db = MySQLdb.connect("localhost", "root", "123", "Fall_2015_Grades")
+except Exception:
     print 'Error opening the DB'
 
 cursor = db.cursor()
@@ -20,8 +21,8 @@ for line in special_cr_file.readlines():
     special_credit_hours[data[0].strip(' ')] = float(data[1])
 
 
-#Grades and it's 4.0 scale
-grades  = {
+# Grades and it's 4.0 scale
+grades = {
     "A+": 4.0,
     "A" : 4.0,
     "A-": 3.7,
@@ -39,7 +40,7 @@ grades  = {
     "W": 0.0
 }
 
-#Empty dictionary for courses
+# Empty dictionary for courses
 courses = {
 }
 
@@ -47,8 +48,8 @@ ID = 0
 
 files_directory = 'html_files'
 
-for i in range(10, 15):
-    if (i < 10):
+for i in range(10, 16):
+    if i < 10:
         year_ID = '0' + str(i) + 'p'
         directory = files_directory + '/' + '0' + str(i)
     else:
@@ -72,35 +73,33 @@ for i in range(10, 15):
                 tables = parsed_html.findChildren('table')
 
                 student_id = file[:7]
-                student_name = parsed_html.find("span", {"id": "main_DataList2_StudentName_0"}).text
+                student_name = parsed_html.findChildren("p")[0].text.split(':')[1].strip(' ')
 
                 table = tables[1]
-                rows = table.findChildren('tr')
+                rows = table.findChildren('tr')[1:]
 
                 number_of_courses = 0
-                total_grades  = 0
+                total_grades = 0
                 for row in rows:
                     cols = row.findChildren('td')
-                    if len(cols)< 2:
-                        continue
 
-                    course_name = str(cols[0].text)
+                    course_name = str(cols[1].text)
                     if(special_credit_hours.has_key(course_name)):
                         number_of_courses += (1*special_credit_hours[course_name])
                     else:
                         number_of_courses += 3
 
-                    #Check if course already added to dictionary or not
-                    if(not courses.has_key(course_name)):
+                    # Check if course already added to dictionary or not
+                    if not courses.has_key(course_name):
                         courses[course_name] = [0, 1, 0.0, 4.0, ID, 1]
                         ID += 1
                     else:
-                        courses[course_name][1] = courses[course_name][1] + 1
+                        courses[course_name][1] += 1
                         courses[course_name][5] += 1
 
-                    student_grade_for_course = grades[cols[1].text]
+                    student_grade_for_course = grades[cols[2].text]
 
-                    if (special_credit_hours.has_key(course_name)):
+                    if special_credit_hours.has_key(course_name):
                         total_grades += student_grade_for_course*special_credit_hours[course_name]
                     else:
                         total_grades += student_grade_for_course * 3.0
@@ -113,12 +112,12 @@ for i in range(10, 15):
                     courses[course_name][2] = student_grade_for_course if student_grade_for_course > course_max else course_max
                     courses[course_name][3] = student_grade_for_course if student_grade_for_course < course_min else course_min
 
-                    #average calculation on the go:
+                    # average calculation on the go:
                     # new_average = (i-th element)/i + (old_average*(i-1)/i
-                    courses[course_name][0] = grades[cols[1].text] / course_counter + \
+                    courses[course_name][0] = grades[cols[2].text] / course_counter + \
                                               (course_average*(course_counter - 1)) / course_counter
 
-                    #insert into Courses table
+                    # insert into Courses table
                     sql = "INSERT INTO Courses(course_id, student_id, courses_grade)" \
                           "VALUES({0}, \"{1}\", {2});".format(int(courses[course_name][4]), student_id, student_grade_for_course)
 
